@@ -1,0 +1,33 @@
+============================================================
+CASH UP - 26/08/2018
+============================================================
+
+CASH BREAKDOWN:
+  10p: 20 × £0.10 = £2.00
+  20p: 20 × £0.20 = £4.00
+  50p: 38 × £0.50 = £19.00
+  £5: 2 × £5.00 = £10.00
+  £10: 12 × £10.00 = £120.00
+  £20: 2 × £20.00 = £40.00
+  Total Cash: £195.00
+
+RECEIPTS: None
+
+AIR HOCKEY MACHINE:
+  Air hockey earnings: £0.00
+
+SUMMARY:
+  Starting Float: £200.00
+  Expected Takings: £0.00
+  Expected Total: £200.00
+  Actual Total: £195.00
+    (Cash: £195.00 + Receipts: £0.00 + Air Hockey: £0.00)
+  Result: SHORT by £5.00
+
+BAGGING INSTRUCTIONS:
+  Add £5.00 to reach £200.00 float
+  Final till amount: £200.00
+
+============================================================
+CASH UP COMPLETE
+============================================================

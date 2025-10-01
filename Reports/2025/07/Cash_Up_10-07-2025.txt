@@ -1,0 +1,44 @@
+============================================================
+CASH UP - 10/07/2025
+============================================================
+
+CASH BREAKDOWN:
+  2p: 5 × £0.02 = £0.10
+  5p: 162 × £0.05 = £8.10
+  10p: 21 × £0.10 = £2.10
+  20p: 21 × £0.20 = £4.20
+  50p: 20 × £0.50 = £10.00
+  £1: 5 × £1.00 = £5.00
+  £5: 4 × £5.00 = £20.00
+  £10: 15 × £10.00 = £150.00
+  £20: 2 × £20.00 = £40.00
+  Total Cash: £239.50
+
+RECEIPT BREAKDOWN:
+  Receipt #1: £3.45
+  Total Receipts: £3.45
+
+AIR HOCKEY MACHINE:
+  Air hockey earnings: £0.00
+
+SUMMARY:
+  Starting Float: £200.00
+  Expected Takings: £49.95
+  Expected Total: £249.95
+  Actual Total: £242.95
+    (Cash: £239.50 + Receipts: £3.45 + Air Hockey: £0.00)
+    REFUND OF £10.00 for axe throwing session not included in cash up.
+  Difference: -£7.00
+  Result: OVER by £3.00
+============================================================
+
+BAGGING INSTRUCTIONS:
+  Remove £42.95 total:
+    - All receipts: £3.45
+    - Air hockey earnings: £0.00
+    - Additional cash: £39.50
+  Final till amount: £200.00
+
+============================================================
+CASH UP COMPLETE
+============================================================

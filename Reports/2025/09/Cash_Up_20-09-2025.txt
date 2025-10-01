@@ -1,0 +1,40 @@
+============================================================
+CASH UP - 20/09/2025
+============================================================
+
+CASH BREAKDOWN:
+  1p: 3 × £0.01 = £0.03
+  2p: 2 × £0.02 = £0.04
+  5p: 114 × £0.05 = £5.70
+  10p: 39 × £0.10 = £3.90
+  20p: 44 × £0.20 = £8.80
+  £2: 1 × £2.00 = £2.00
+  £10: 5 × £10.00 = £50.00
+  £20: 27 × £20.00 = £540.00
+  Total Cash: £610.47
+
+RECEIPT BREAKDOWN:
+  Receipt #1: £39.08
+  Total Receipts: £39.08
+
+ADDITIONAL CASH IN: None
+
+SUMMARY:
+  Starting Float: £200.00
+  Expected Takings: £428.90
+  Expected Total: £628.90
+  Actual Total: £649.55
+    (Cash: £610.47 + Receipts: £39.08)
+  Additional Cash In: £0.00 (already in till)
+  Result: OVER by £20.65
+
+BAGGING INSTRUCTIONS:
+  Remove £449.55 total:
+    - All receipts: £39.08
+    - Additional cash stays in till: £0.00
+    - Additional cash: £410.47
+  Final till amount: £200.00
+
+============================================================
+CASH UP COMPLETE
+============================================================

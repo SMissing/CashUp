@@ -1,0 +1,41 @@
+============================================================
+CASH UP - 14/08/2025
+============================================================
+
+CASH BREAKDOWN:
+  1p: 5 × £0.01 = £0.05
+  2p: 4 × £0.02 = £0.08
+  5p: 17 × £0.05 = £0.85
+  10p: 16 × £0.10 = £1.60
+  20p: 1 × £0.20 = £0.20
+  50p: 2 × £0.50 = £1.00
+  £1: 5 × £1.00 = £5.00
+  £2: 1 × £2.00 = £2.00
+  £5: 7 × £5.00 = £35.00
+  £10: 14 × £10.00 = £140.00
+  £20: 9 × £20.00 = £180.00
+  Total Cash: £365.78
+
+RECEIPTS: None
+
+AIR HOCKEY MACHINE:
+  Air hockey earnings: £0.00
+
+SUMMARY:
+  Starting Float: £200.00
+  Expected Takings: £159.25
+  Expected Total: £359.25
+  Actual Total: £365.78
+    (Cash: £365.78 + Receipts: £0.00 + Air Hockey: £0.00)
+  Result: OVER by £6.53
+
+BAGGING INSTRUCTIONS:
+  Remove £165.78 total:
+    - All receipts: £0.00
+    - Air hockey earnings: £0.00
+    - Additional cash: £165.78
+  Final till amount: £200.00
+
+============================================================
+CASH UP COMPLETE
+============================================================

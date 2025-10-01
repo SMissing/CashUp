@@ -1,0 +1,310 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% block title %}Cash Up Application{% endblock %}</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --bg-primary: #0d1117;
+            --bg-secondary: #161b22;
+            --bg-tertiary: #21262d;
+            --text-primary: #f0f6fc;
+            --text-secondary: #8b949e;
+            --text-muted: #6e7681;
+            --border-color: #30363d;
+            --accent-green: #3fb950;
+            --accent-blue: #58a6ff;
+            --accent-yellow: #d29922;
+            --accent-red: #f85149;
+            --accent-orange: #ff7b72;
+            --accent-purple: #a5a5ff;
+            --terminal-green: #00ff00;
+            --terminal-amber: #ffb000;
+        }
+        
+        body {
+            background-color: var(--bg-primary);
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        .navbar {
+            background-color: var(--bg-secondary) !important;
+            border-bottom: 1px solid var(--border-color);
+        }
+        
+        .navbar-brand {
+            font-weight: bold;
+            color: var(--terminal-green) !important;
+            text-shadow: 0 0 5px var(--terminal-green);
+        }
+        
+        .navbar-nav .nav-link {
+            color: var(--text-secondary) !important;
+        }
+        
+        .navbar-nav .nav-link:hover {
+            color: var(--text-primary) !important;
+        }
+        
+        .card {
+            background-color: var(--bg-secondary);
+            border: 1px solid var(--border-color);
+            border-radius: 8px;
+        }
+        
+        .card-header {
+            background-color: var(--bg-tertiary);
+            color: var(--terminal-green);
+            border-bottom: 1px solid var(--border-color);
+            font-weight: bold;
+        }
+        
+        .card-body {
+            background-color: var(--bg-secondary);
+        }
+        
+        .form-control {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--text-primary);
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        .form-control:focus {
+            background-color: var(--bg-tertiary);
+            border-color: var(--terminal-green);
+            color: var(--text-primary);
+            box-shadow: 0 0 0 0.2rem rgba(0, 255, 0, 0.25);
+        }
+        
+        .form-label {
+            color: var(--text-primary);
+            font-weight: bold;
+        }
+        
+        .input-group-text {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            color: var(--terminal-amber);
+            font-weight: bold;
+        }
+        
+        .btn-primary {
+            background-color: var(--terminal-green);
+            border-color: var(--terminal-green);
+            color: var(--bg-primary);
+            font-weight: bold;
+        }
+        
+        .btn-primary:hover {
+            background-color: #00cc00;
+            border-color: #00cc00;
+            color: var(--bg-primary);
+            box-shadow: 0 0 10px var(--terminal-green);
+        }
+        
+        .btn-success {
+            background-color: var(--accent-green);
+            border-color: var(--accent-green);
+            color: var(--bg-primary);
+        }
+        
+        .btn-success:hover {
+            background-color: #2ea043;
+            border-color: #2ea043;
+        }
+        
+        .btn-outline-primary {
+            color: var(--terminal-green);
+            border-color: var(--terminal-green);
+        }
+        
+        .btn-outline-primary:hover {
+            background-color: var(--terminal-green);
+            border-color: var(--terminal-green);
+            color: var(--bg-primary);
+        }
+        
+        .btn-outline-danger {
+            color: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+        
+        .btn-outline-danger:hover {
+            background-color: var(--accent-red);
+            border-color: var(--accent-red);
+        }
+        
+        .denomination-input {
+            max-width: 100px;
+        }
+        
+        .receipt-item {
+            background-color: var(--bg-tertiary);
+            border: 1px solid var(--border-color);
+            border-radius: 5px;
+            padding: 10px;
+            margin-bottom: 10px;
+        }
+        
+        .result-card {
+            border-left: 4px solid var(--terminal-green);
+            background-color: var(--bg-secondary);
+        }
+        
+        .over-amount {
+            color: var(--terminal-green);
+            font-weight: bold;
+            text-shadow: 0 0 3px var(--terminal-green);
+        }
+        
+        .short-amount {
+            color: var(--accent-red);
+            font-weight: bold;
+            text-shadow: 0 0 3px var(--accent-red);
+        }
+        
+        .exact-amount {
+            color: var(--accent-blue);
+            font-weight: bold;
+            text-shadow: 0 0 3px var(--accent-blue);
+        }
+        
+        .alert-success {
+            background-color: rgba(63, 185, 80, 0.1);
+            border-color: var(--accent-green);
+            color: var(--terminal-green);
+        }
+        
+        .alert-danger {
+            background-color: rgba(248, 81, 73, 0.1);
+            border-color: var(--accent-red);
+            color: var(--accent-red);
+        }
+        
+        .alert-info {
+            background-color: rgba(88, 166, 255, 0.1);
+            border-color: var(--accent-blue);
+            color: var(--accent-blue);
+        }
+        
+        .text-muted {
+            color: var(--text-muted) !important;
+        }
+        
+        .text-primary {
+            color: var(--text-primary) !important;
+        }
+        
+        .text-success {
+            color: var(--terminal-green) !important;
+        }
+        
+        .text-danger {
+            color: var(--accent-red) !important;
+        }
+        
+        .text-warning {
+            color: var(--accent-yellow) !important;
+        }
+        
+        .text-info {
+            color: var(--accent-blue) !important;
+        }
+        
+        .bg-light {
+            background-color: var(--bg-tertiary) !important;
+        }
+        
+        .badge {
+            font-family: 'Monaco', 'Menlo', 'Ubuntu Mono', monospace;
+        }
+        
+        .badge.bg-success {
+            background-color: var(--terminal-green) !important;
+            color: var(--bg-primary) !important;
+        }
+        
+        .badge.bg-danger {
+            background-color: var(--accent-red) !important;
+            color: var(--bg-primary) !important;
+        }
+        
+        .badge.bg-secondary {
+            background-color: var(--text-muted) !important;
+            color: var(--bg-primary) !important;
+        }
+        
+        /* Terminal-style scrollbars */
+        ::-webkit-scrollbar {
+            width: 8px;
+        }
+        
+        ::-webkit-scrollbar-track {
+            background: var(--bg-primary);
+        }
+        
+        ::-webkit-scrollbar-thumb {
+            background: var(--border-color);
+            border-radius: 4px;
+        }
+        
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--text-muted);
+        }
+        
+        /* Glowing effect for important elements */
+        .glow {
+            box-shadow: 0 0 10px var(--terminal-green);
+        }
+        
+        /* Terminal cursor effect */
+        .terminal-cursor::after {
+            content: '█';
+            animation: blink 1s infinite;
+            color: var(--terminal-green);
+        }
+        
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+    </style>
+</head>
+<body>
+    <nav class="navbar navbar-expand-lg navbar-dark">
+        <div class="container">
+            <a class="navbar-brand" href="{{ url_for('index') }}">
+                <i class="fas fa-calculator"></i> Cash Up
+            </a>
+            <div class="navbar-nav ms-auto">
+                <a class="nav-link" href="{{ url_for('index') }}">
+                    <i class="fas fa-home"></i> Home
+                </a>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container mt-4">
+        {% with messages = get_flashed_messages(with_categories=true) %}
+            {% if messages %}
+                {% for category, message in messages %}
+                    <div class="alert alert-{{ 'danger' if category == 'error' else category }} alert-dismissible fade show" role="alert">
+                        {{ message }}
+                        <button type="button" class="btn-close" data-bs-dismiss="alert"></button>
+                    </div>
+                {% endfor %}
+            {% endif %}
+        {% endwith %}
+
+        {% block content %}{% endblock %}
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/js/bootstrap.bundle.min.js"></script>
+    {% block scripts %}{% endblock %}
+</body>
+</html>

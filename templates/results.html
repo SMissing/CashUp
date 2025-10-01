@@ -1,0 +1,201 @@
+{% extends "base.html" %}
+
+{% block title %}Cash Up Results - {{ date }}{% endblock %}
+
+{% block content %}
+<div class="row">
+    <div class="col-12">
+        <div class="card result-card">
+            <div class="card-header">
+                <h4><i class="fas fa-chart-line"></i> Cash Up Results - {{ date }} <span class="terminal-cursor"></span></h4>
+            </div>
+            <div class="card-body">
+                <!-- Summary Section -->
+                <div class="row mb-4">
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">Total Cash</h6>
+                                <h4 class="text-primary">£{{ "%.2f"|format(analysis.total_cash) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">Total Receipts</h6>
+                                <h4 class="text-info">£{{ "%.2f"|format(analysis.total_receipts) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">Additional Cash</h6>
+                                <h4 class="text-warning">£{{ "%.2f"|format(analysis.total_additional_cash) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="col-md-3">
+                        <div class="card bg-light">
+                            <div class="card-body text-center">
+                                <h6 class="card-title">Total in Till</h6>
+                                <h4 class="text-success">£{{ "%.2f"|format(analysis.total_in_till) }}</h4>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Float Analysis -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-balance-scale"></i> Float Analysis</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            <div class="col-md-6">
+                                <p><strong>Starting Float:</strong> £{{ "%.2f"|format(200.00) }}</p>
+                                <p><strong>Expected Takings:</strong> £{{ "%.2f"|format(analysis.expected_takings) }}</p>
+                                <p><strong>Expected Total:</strong> £{{ "%.2f"|format(analysis.expected_total) }}</p>
+                            </div>
+                            <div class="col-md-6">
+                                <p><strong>Actual Total:</strong> £{{ "%.2f"|format(analysis.total_in_till) }}</p>
+                                <p><strong>Additional Cash In:</strong> £{{ "%.2f"|format(analysis.total_additional_cash) }} (already in till)</p>
+                                <p><strong>Difference:</strong> 
+                                    {% if analysis.is_exact %}
+                                        <span class="exact-amount">EXACT BALANCE</span>
+                                    {% elif analysis.is_over %}
+                                        <span class="over-amount">OVER by £{{ "%.2f"|format(analysis.difference) }}</span>
+                                    {% else %}
+                                        <span class="short-amount">SHORT by £{{ "%.2f"|format(analysis.difference|abs) }}</span>
+                                    {% endif %}
+                                </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Cash Breakdown -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-coins"></i> Cash Breakdown</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for i in range(denominations|length) %}
+                                {% if cash_counts[i] > 0 %}
+                                <div class="col-md-3 col-sm-4 mb-2">
+                                    <div class="d-flex justify-content-between">
+                                        <span>{{ denominations[i] }}:</span>
+                                        <span>{{ cash_counts[i] }} × £{{ "%.2f"|format(values[i]) }} = £{{ "%.2f"|format(cash_counts[i] * values[i]) }}</span>
+                                    </div>
+                                </div>
+                                {% endif %}
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Receipts Breakdown -->
+                {% if receipt_amounts %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-receipt"></i> Receipts Breakdown</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for amount in receipt_amounts %}
+                            <div class="col-md-3 col-sm-4 mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span>Receipt #{{ loop.index }}:</span>
+                                    <span>£{{ "%.2f"|format(amount) }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Additional Cash Breakdown -->
+                {% if additional_cash_entries %}
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-plus-circle"></i> Additional Cash In Breakdown</h5>
+                    </div>
+                    <div class="card-body">
+                        <div class="row">
+                            {% for entry in additional_cash_entries %}
+                            <div class="col-md-6 col-sm-12 mb-2">
+                                <div class="d-flex justify-content-between">
+                                    <span>{{ entry.title }}:</span>
+                                    <span>£{{ "%.2f"|format(entry.amount) }}</span>
+                                </div>
+                            </div>
+                            {% endfor %}
+                        </div>
+                    </div>
+                </div>
+                {% endif %}
+
+                <!-- Bagging Instructions -->
+                <div class="card mb-4">
+                    <div class="card-header">
+                        <h5><i class="fas fa-shopping-bag"></i> Bagging Instructions</h5>
+                    </div>
+                    <div class="card-body">
+                        {% if analysis.amount_to_remove > 0 %}
+                            <p><strong>Remove £{{ "%.2f"|format(analysis.amount_to_remove) }} total:</strong></p>
+                            <ul>
+                                <li>All receipts: £{{ "%.2f"|format(analysis.total_receipts) }}</li>
+                                <li>Additional cash stays in till: £{{ "%.2f"|format(analysis.total_additional_cash) }}</li>
+                                {% if bagging.cash_to_remove > 0 %}
+                                    <li>Additional cash: £{{ "%.2f"|format(bagging.cash_to_remove) }}</li>
+                                    {% if bagging.cash_suggestions %}
+                                        <li><strong>Suggested cash removal:</strong>
+                                            <ul>
+                                                {% for denom, count, value in bagging.cash_suggestions %}
+                                                <li>{{ count }} × {{ denom }} = £{{ "%.2f"|format(value) }}</li>
+                                                {% endfor %}
+                                            </ul>
+                                        </li>
+                                    {% endif %}
+                                {% elif bagging.needs_additional_cash %}
+                                    <li>Add cash: £{{ "%.2f"|format(bagging.additional_cash_needed) }}</li>
+                                {% endif %}
+                            </ul>
+                        {% else %}
+                            <p><strong>Add £{{ "%.2f"|format(analysis.amount_to_remove|abs) }} to reach £{{ "%.2f"|format(200.00) }} float</strong></p>
+                        {% endif %}
+                        <p><strong>Final till amount: £{{ "%.2f"|format(200.00) }}</strong></p>
+                    </div>
+                </div>
+
+                <!-- Action Buttons -->
+                <div class="d-grid gap-2 d-md-flex justify-content-md-end">
+                    <form method="POST" action="{{ url_for('save_report') }}" class="d-inline">
+                        <input type="hidden" name="date" value="{{ date }}">
+                        {% for i in range(denominations|length) %}
+                        <input type="hidden" name="count_{{ i }}" value="{{ cash_counts[i] }}">
+                        {% endfor %}
+                        {% for amount in receipt_amounts %}
+                        <input type="hidden" name="receipt_amounts" value="{{ amount }}">
+                        {% endfor %}
+                        {% for entry in additional_cash_entries %}
+                        <input type="hidden" name="additional_cash_titles" value="{{ entry.title }}">
+                        <input type="hidden" name="additional_cash_amounts" value="{{ entry.amount }}">
+                        {% endfor %}
+                        <input type="hidden" name="expected_takings" value="{{ expected_takings }}">
+                        <button type="submit" class="btn btn-success">
+                            <i class="fas fa-save"></i> Save Report
+                        </button>
+                    </form>
+                    <a href="{{ url_for('index') }}" class="btn btn-primary">
+                        <i class="fas fa-plus"></i> New Cash Up
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+{% endblock %}

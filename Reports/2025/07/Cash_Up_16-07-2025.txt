@@ -1,0 +1,39 @@
+============================================================
+CASH UP - 16/07/2025
+============================================================
+
+CASH BREAKDOWN:
+  5p: 113 × £0.05 = £5.65
+  10p: 106 × £0.10 = £10.60
+  20p: 65 × £0.20 = £13.00
+  50p: 39 × £0.50 = £19.50
+  £1: 50 × £1.00 = £50.00
+  £5: 1 × £5.00 = £5.00
+  £10: 10 × £10.00 = £100.00
+  £20: 1 × £20.00 = £20.00
+  Total Cash: £223.75
+
+RECEIPTS: None
+
+AIR HOCKEY MACHINE:
+  Air hockey earnings: £0.00
+
+SUMMARY:
+  Starting Float: £200.00
+  Expected Takings: £22.00
+  Expected Total: £222.00
+  Actual Total: £223.75
+    (Cash: £223.75 + Receipts: £0.00 + Air Hockey: £0.00)
+  Result: OVER by £1.75
+  Bender: J20 Apple & Raspberry = £1.75 approved my Missing
+
+BAGGING INSTRUCTIONS:
+  Remove £23.75 total:
+    - All receipts: £0.00
+    - Air hockey earnings: £0.00
+    - Additional cash: £23.75
+  Final till amount: £200.00
+
+============================================================
+CASH UP COMPLETE
+============================================================
