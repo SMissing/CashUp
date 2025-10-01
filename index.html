@@ -1,0 +1,757 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>CashUp - Cash Management Application</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        :root {
+            --terminal-bg: #1a1a1a;
+            --terminal-text: #00ff00;
+            --terminal-amber: #ffb000;
+            --terminal-blue: #0080ff;
+        }
+
+        body {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+
+        .terminal-cursor::after {
+            content: '_';
+            animation: blink 1s infinite;
+        }
+
+        @keyframes blink {
+            0%, 50% { opacity: 1; }
+            51%, 100% { opacity: 0; }
+        }
+
+        .card {
+            border: none;
+            border-radius: 15px;
+            box-shadow: 0 10px 30px rgba(0,0,0,0.2);
+            backdrop-filter: blur(10px);
+            background: rgba(255,255,255,0.95);
+        }
+
+        .card-header {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border-radius: 15px 15px 0 0 !important;
+            border: none;
+        }
+
+        .btn-primary {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            border: none;
+            border-radius: 10px;
+            padding: 12px 30px;
+            font-weight: 600;
+            transition: all 0.3s ease;
+        }
+
+        .btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+
+        .form-control {
+            border-radius: 10px;
+            border: 2px solid #e9ecef;
+            transition: all 0.3s ease;
+        }
+
+        .form-control:focus {
+            border-color: #667eea;
+            box-shadow: 0 0 0 0.2rem rgba(102, 126, 234, 0.25);
+        }
+
+        .input-group-text {
+            background: linear-gradient(45deg, #667eea, #764ba2);
+            color: white;
+            border: none;
+            border-radius: 10px 0 0 10px;
+            font-weight: 600;
+        }
+
+        .denomination-input {
+            border-radius: 0 10px 10px 0;
+        }
+
+        .badge {
+            font-size: 1rem;
+            padding: 10px 20px;
+            border-radius: 25px;
+        }
+
+        .receipt-item, .additional-cash-item {
+            transition: all 0.3s ease;
+        }
+
+        .receipt-item:hover, .additional-cash-item:hover {
+            transform: translateX(5px);
+        }
+
+        .results-section {
+            background: linear-gradient(135deg, #f093fb 0%, #f5576c 100%);
+            color: white;
+            border-radius: 15px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+
+        .summary-card {
+            background: rgba(255,255,255,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .bagging-instructions {
+            background: rgba(0,0,0,0.1);
+            border-radius: 10px;
+            padding: 15px;
+            margin: 10px 0;
+        }
+
+        .floating-action {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            z-index: 1000;
+        }
+
+        @media (max-width: 768px) {
+            .card {
+                margin: 10px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <div class="container-fluid py-4">
+        <div class="row">
+            <div class="col-12">
+                <div class="text-center mb-4">
+                    <h1 class="display-4 text-white fw-bold">
+                        <i class="fas fa-calculator"></i> CashUp
+                    </h1>
+                    <p class="lead text-white-50">Professional Cash Management System</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="row">
+            <div class="col-lg-8">
+                <div class="card">
+                    <div class="card-header">
+                        <h4><i class="fas fa-calculator"></i> Daily Cash Up <span class="terminal-cursor"></span></h4>
+                    </div>
+                    <div class="card-body">
+                        <form id="cashUpForm">
+                            <!-- Date Input -->
+                            <div class="mb-4">
+                                <label for="date" class="form-label"><strong>Date</strong></label>
+                                <input type="date" class="form-control" id="date" name="date" required>
+                            </div>
+
+                            <!-- Cash Counts -->
+                            <div class="mb-4">
+                                <h5><i class="fas fa-coins"></i> Cash Count</h5>
+                                <div class="row">
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">1p</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_0" id="count_0" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 0)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">2p</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_1" id="count_1" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 1)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">5p</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_2" id="count_2" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 2)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">10p</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_3" id="count_3" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 3)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">20p</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_4" id="count_4" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 4)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">50p</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_5" id="count_5" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 5)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">£1</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_6" id="count_6" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 6)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">£2</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_7" id="count_7" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 7)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">£5</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_8" id="count_8" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 8)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">£10</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_9" id="count_9" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 9)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">£20</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_10" id="count_10" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 10)">
+                                        </div>
+                                    </div>
+                                    <div class="col-md-4 col-sm-6 mb-2">
+                                        <div class="input-group">
+                                            <span class="input-group-text">£50</span>
+                                            <input type="number" class="form-control denomination-input" 
+                                                   name="count_11" id="count_11" min="0" value="0" 
+                                                   onchange="calculateTotals()" onkeydown="handleCashInputKeys(event, 11)">
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="mt-2">
+                                    <strong>Total Cash: £<span id="totalCash">0.00</span></strong>
+                                    <small class="text-muted d-block mt-1">
+                                        <i class="fas fa-terminal"></i> 
+                                        <span style="color: var(--terminal-amber);">Use SPACE for +10, ↓ for -10, ←→ for ±1</span>
+                                    </small>
+                                </div>
+                            </div>
+
+                            <!-- Receipts -->
+                            <div class="mb-4">
+                                <h5><i class="fas fa-receipt"></i> Receipts</h5>
+                                <div id="receiptsContainer">
+                                    <div class="receipt-item">
+                                        <div class="input-group">
+                                            <span class="input-group-text">Receipt #1</span>
+                                            <input type="number" class="form-control" name="receipt_amounts" 
+                                                   step="0.01" min="0" placeholder="0.00" onchange="calculateTotals()">
+                                            <button type="button" class="btn btn-outline-danger" onclick="removeReceipt(this)">
+                                                <i class="fas fa-trash"></i>
+                                            </button>
+                                        </div>
+                                    </div>
+                                </div>
+                                <button type="button" class="btn btn-outline-primary" onclick="addReceipt()">
+                                    <i class="fas fa-plus"></i> Add Receipt
+                                </button>
+                                <div class="mt-2">
+                                    <strong>Total Receipts: £<span id="totalReceipts">0.00</span></strong>
+                                </div>
+                            </div>
+
+                            <!-- Additional Cash In -->
+                            <div class="mb-4">
+                                <h5><i class="fas fa-plus-circle"></i> Additional Cash In</h5>
+                                <p class="text-muted small">Cash that went into the till during the day (already counted in the cash above)</p>
+                                
+                                <div id="additionalCashContainer">
+                                    <div class="additional-cash-item mb-2">
+                                        <div class="row">
+                                            <div class="col-md-6">
+                                                <input type="text" class="form-control" name="additional_cash_titles" 
+                                                       placeholder="Description (e.g., Air Hockey, Vending Machine)" 
+                                                       onchange="calculateTotals()">
+                                            </div>
+                                            <div class="col-md-4">
+                                                <div class="input-group">
+                                                    <span class="input-group-text">£</span>
+                                                    <input type="number" class="form-control" name="additional_cash_amounts" 
+                                                           step="0.01" min="0" placeholder="0.00" onchange="calculateTotals()">
+                                                </div>
+                                            </div>
+                                            <div class="col-md-2">
+                                                <button type="button" class="btn btn-outline-danger" onclick="removeAdditionalCash(this)">
+                                                    <i class="fas fa-trash"></i>
+                                                </button>
+                                            </div>
+                                        </div>
+                                    </div>
+                                </div>
+                                
+                                <button type="button" class="btn btn-outline-primary" onclick="addAdditionalCash()">
+                                    <i class="fas fa-plus"></i> Add Additional Cash
+                                </button>
+                                
+                                <div class="mt-2">
+                                    <strong>Total Additional Cash: £<span id="totalAdditionalCash">0.00</span></strong>
+                                </div>
+                            </div>
+
+                            <!-- Expected Takings -->
+                            <div class="mb-4">
+                                <label for="expected_takings" class="form-label">
+                                    <strong><i class="fas fa-target"></i> Expected Takings</strong>
+                                </label>
+                                <div class="input-group">
+                                    <span class="input-group-text">£</span>
+                                    <input type="number" class="form-control" id="expected_takings" 
+                                           name="expected_takings" step="0.01" min="0" 
+                                           value="0" onchange="calculateTotals()">
+                                </div>
+                            </div>
+
+                            <div class="d-grid gap-2">
+                                <button type="button" class="btn btn-primary btn-lg" onclick="calculateCashUp()">
+                                    <i class="fas fa-calculator"></i> Calculate Cash Up
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-lg-4">
+                <div class="card">
+                    <div class="card-header">
+                        <h5><i class="fas fa-info-circle"></i> Quick Info</h5>
+                    </div>
+                    <div class="card-body">
+                        <p><strong>Starting Float:</strong> £200.00</p>
+                        <p><strong>Total in Till:</strong> £<span id="totalInTill">0.00</span></p>
+                        <p><strong>Expected Total:</strong> £<span id="expectedTotal">0.00</span></p>
+                        <hr>
+                        <div id="quickResult" class="text-center">
+                            <span class="badge bg-secondary">Enter amounts to see results</span>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="card mt-3">
+                    <div class="card-header">
+                        <h5><i class="fas fa-question-circle"></i> How to Use</h5>
+                    </div>
+                    <div class="card-body">
+                        <ol class="small">
+                            <li>Enter today's date</li>
+                            <li>Count and enter cash amounts for each denomination</li>
+                            <li>Add receipt amounts</li>
+                            <li>Enter additional cash (air hockey, vending, etc.)</li>
+                            <li>Enter expected takings for the day</li>
+                            <li>Click "Calculate Cash Up" to see results</li>
+                        </ol>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Results Section (initially hidden) -->
+        <div id="resultsSection" class="results-section" style="display: none;">
+            <h3><i class="fas fa-chart-line"></i> Cash Up Results</h3>
+            <div id="resultsContent"></div>
+        </div>
+    </div>
+
+    <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/js/bootstrap.bundle.min.js"></script>
+    <script>
+        // Configuration
+        const denominations = ["1p", "2p", "5p", "10p", "20p", "50p", "£1", "£2", "£5", "£10", "£20", "£50"];
+        const values = [0.01, 0.02, 0.05, 0.10, 0.20, 0.50, 1.00, 2.00, 5.00, 10.00, 20.00, 50.00];
+        const defaultFloat = 200.00;
+
+        let receiptCount = 1;
+        let additionalCashCount = 1;
+
+        function addReceipt() {
+            receiptCount++;
+            const container = document.getElementById('receiptsContainer');
+            const newReceipt = document.createElement('div');
+            newReceipt.className = 'receipt-item';
+            newReceipt.innerHTML = `
+                <div class="input-group">
+                    <span class="input-group-text">Receipt #${receiptCount}</span>
+                    <input type="number" class="form-control" name="receipt_amounts" 
+                           step="0.01" min="0" placeholder="0.00" onchange="calculateTotals()">
+                    <button type="button" class="btn btn-outline-danger" onclick="removeReceipt(this)">
+                        <i class="fas fa-trash"></i>
+                    </button>
+                </div>
+            `;
+            container.appendChild(newReceipt);
+        }
+
+        function addAdditionalCash() {
+            additionalCashCount++;
+            const container = document.getElementById('additionalCashContainer');
+            const newItem = document.createElement('div');
+            newItem.className = 'additional-cash-item mb-2';
+            newItem.innerHTML = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <input type="text" class="form-control" name="additional_cash_titles" 
+                               placeholder="Description (e.g., Air Hockey, Vending Machine)" 
+                               onchange="calculateTotals()">
+                    </div>
+                    <div class="col-md-4">
+                        <div class="input-group">
+                            <span class="input-group-text">£</span>
+                            <input type="number" class="form-control" name="additional_cash_amounts" 
+                                   step="0.01" min="0" placeholder="0.00" onchange="calculateTotals()">
+                        </div>
+                    </div>
+                    <div class="col-md-2">
+                        <button type="button" class="btn btn-outline-danger" onclick="removeAdditionalCash(this)">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                </div>
+            `;
+            container.appendChild(newItem);
+        }
+
+        function removeAdditionalCash(button) {
+            const item = button.closest('.additional-cash-item');
+            item.remove();
+            calculateTotals();
+        }
+
+        function removeReceipt(button) {
+            const receiptItem = button.closest('.receipt-item');
+            receiptItem.remove();
+            calculateTotals();
+        }
+
+        function handleCashInputKeys(event, inputIndex) {
+            const input = document.getElementById(`count_${inputIndex}`);
+            let currentValue = parseInt(input.value) || 0;
+            let newValue = currentValue;
+            
+            switch(event.key) {
+                case ' ':
+                    event.preventDefault();
+                    newValue = currentValue + 10;
+                    break;
+                case 'ArrowDown':
+                    event.preventDefault();
+                    newValue = Math.max(0, currentValue - 10);
+                    break;
+                case 'ArrowRight':
+                    event.preventDefault();
+                    newValue = currentValue + 1;
+                    break;
+                case 'ArrowLeft':
+                    event.preventDefault();
+                    newValue = Math.max(0, currentValue - 1);
+                    break;
+                default:
+                    return; // Let other keys work normally
+            }
+            
+            input.value = newValue;
+            calculateTotals();
+        }
+
+        function calculateTotals() {
+            // Calculate cash total
+            let totalCash = 0;
+            for (let i = 0; i < values.length; i++) {
+                const count = parseInt(document.getElementById(`count_${i}`).value) || 0;
+                totalCash += count * values[i];
+            }
+            document.getElementById('totalCash').textContent = totalCash.toFixed(2);
+
+            // Calculate receipts total
+            let totalReceipts = 0;
+            const receiptInputs = document.querySelectorAll('input[name="receipt_amounts"]');
+            receiptInputs.forEach(input => {
+                totalReceipts += parseFloat(input.value) || 0;
+            });
+            document.getElementById('totalReceipts').textContent = totalReceipts.toFixed(2);
+
+            // Calculate additional cash total
+            let totalAdditionalCash = 0;
+            const additionalAmountInputs = document.querySelectorAll('input[name="additional_cash_amounts"]');
+            additionalAmountInputs.forEach(input => {
+                totalAdditionalCash += parseFloat(input.value) || 0;
+            });
+            document.getElementById('totalAdditionalCash').textContent = totalAdditionalCash.toFixed(2);
+
+            // Calculate expected takings
+            const expectedTakings = parseFloat(document.getElementById('expected_takings').value) || 0;
+
+            // Calculate totals (additional cash is already in the till, so we don't add it)
+            const totalInTill = totalCash + totalReceipts;
+            const expectedTotal = defaultFloat + expectedTakings;
+            const difference = totalInTill - expectedTotal;
+
+            document.getElementById('totalInTill').textContent = totalInTill.toFixed(2);
+            document.getElementById('expectedTotal').textContent = expectedTotal.toFixed(2);
+
+            // Update quick result
+            const quickResult = document.getElementById('quickResult');
+            if (Math.abs(difference) < 0.01) {
+                quickResult.innerHTML = '<span class="badge bg-success">EXACT BALANCE</span>';
+            } else if (difference > 0) {
+                quickResult.innerHTML = `<span class="badge bg-success">OVER by £${difference.toFixed(2)}</span>`;
+            } else {
+                quickResult.innerHTML = `<span class="badge bg-danger">SHORT by £${Math.abs(difference).toFixed(2)}</span>`;
+            }
+        }
+
+        function calculateCashUp() {
+            // Get all form data
+            const date = document.getElementById('date').value;
+            const cashCounts = [];
+            for (let i = 0; i < values.length; i++) {
+                cashCounts.push(parseInt(document.getElementById(`count_${i}`).value) || 0);
+            }
+            
+            const receiptAmounts = [];
+            const receiptInputs = document.querySelectorAll('input[name="receipt_amounts"]');
+            receiptInputs.forEach(input => {
+                const amount = parseFloat(input.value);
+                if (amount > 0) receiptAmounts.push(amount);
+            });
+            
+            const additionalCashEntries = [];
+            const additionalTitles = document.querySelectorAll('input[name="additional_cash_titles"]');
+            const additionalAmounts = document.querySelectorAll('input[name="additional_cash_amounts"]');
+            
+            for (let i = 0; i < additionalTitles.length; i++) {
+                const title = additionalTitles[i].value.trim();
+                const amount = parseFloat(additionalAmounts[i].value);
+                if (title && amount > 0) {
+                    additionalCashEntries.push({ title, amount });
+                }
+            }
+            
+            const expectedTakings = parseFloat(document.getElementById('expected_takings').value) || 0;
+            
+            // Calculate analysis
+            const totalCash = cashCounts.reduce((sum, count, i) => sum + count * values[i], 0);
+            const totalReceipts = receiptAmounts.reduce((sum, amount) => sum + amount, 0);
+            const totalAdditionalCash = additionalCashEntries.reduce((sum, entry) => sum + entry.amount, 0);
+            
+            const totalInTill = totalCash + totalReceipts;
+            const expectedTotal = defaultFloat + expectedTakings;
+            const difference = totalInTill - expectedTotal;
+            
+            // Generate bagging instructions
+            const amountToRemove = totalInTill - defaultFloat;
+            
+            // Display results
+            displayResults({
+                date,
+                cashCounts,
+                receiptAmounts,
+                additionalCashEntries,
+                expectedTakings,
+                totalCash,
+                totalReceipts,
+                totalAdditionalCash,
+                totalInTill,
+                expectedTotal,
+                difference,
+                amountToRemove
+            });
+        }
+
+        function displayResults(data) {
+            const resultsContent = document.getElementById('resultsContent');
+            const resultsSection = document.getElementById('resultsSection');
+            
+            let html = `
+                <div class="row">
+                    <div class="col-md-6">
+                        <div class="summary-card">
+                            <h5><i class="fas fa-coins"></i> Cash Breakdown</h5>
+            `;
+            
+            // Cash breakdown
+            for (let i = 0; i < denominations.length; i++) {
+                if (data.cashCounts[i] > 0) {
+                    const totalValue = data.cashCounts[i] * values[i];
+                    html += `<p>${denominations[i]}: ${data.cashCounts[i]} × £${values[i].toFixed(2)} = £${totalValue.toFixed(2)}</p>`;
+                }
+            }
+            
+            html += `
+                            <hr>
+                            <p><strong>Total Cash: £${data.totalCash.toFixed(2)}</strong></p>
+                        </div>
+                    </div>
+                    <div class="col-md-6">
+                        <div class="summary-card">
+                            <h5><i class="fas fa-receipt"></i> Receipts & Additional</h5>
+            `;
+            
+            // Receipts
+            if (data.receiptAmounts.length > 0) {
+                data.receiptAmounts.forEach((amount, index) => {
+                    html += `<p>Receipt #${index + 1}: £${amount.toFixed(2)}</p>`;
+                });
+                html += `<p><strong>Total Receipts: £${data.totalReceipts.toFixed(2)}</strong></p>`;
+            } else {
+                html += `<p>No receipts</p>`;
+            }
+            
+            // Additional cash
+            if (data.additionalCashEntries.length > 0) {
+                html += `<hr><h6>Additional Cash:</h6>`;
+                data.additionalCashEntries.forEach(entry => {
+                    html += `<p>${entry.title}: £${entry.amount.toFixed(2)}</p>`;
+                });
+                html += `<p><strong>Total Additional: £${data.totalAdditionalCash.toFixed(2)}</strong></p>`;
+            }
+            
+            html += `
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="summary-card">
+                    <h5><i class="fas fa-chart-bar"></i> Summary</h5>
+                    <div class="row">
+                        <div class="col-md-6">
+                            <p>Starting Float: £${defaultFloat.toFixed(2)}</p>
+                            <p>Expected Takings: £${data.expectedTakings.toFixed(2)}</p>
+                            <p>Expected Total: £${data.expectedTotal.toFixed(2)}</p>
+                        </div>
+                        <div class="col-md-6">
+                            <p>Actual Total: £${data.totalInTill.toFixed(2)}</p>
+                            <p><strong>Result: `;
+            
+            if (Math.abs(data.difference) < 0.01) {
+                html += `<span class="badge bg-success">EXACT BALANCE</span>`;
+            } else if (data.difference > 0) {
+                html += `<span class="badge bg-success">OVER by £${data.difference.toFixed(2)}</span>`;
+            } else {
+                html += `<span class="badge bg-danger">SHORT by £${Math.abs(data.difference).toFixed(2)}</span>`;
+            }
+            
+            html += `</strong></p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="bagging-instructions">
+                    <h5><i class="fas fa-shopping-bag"></i> Bagging Instructions</h5>
+            `;
+            
+            if (data.amountToRemove > 0) {
+                html += `
+                    <p><strong>Remove £${data.amountToRemove.toFixed(2)} total:</strong></p>
+                    <ul>
+                        <li>All receipts: £${data.totalReceipts.toFixed(2)}</li>
+                        <li>Additional cash: £${data.totalAdditionalCash.toFixed(2)}</li>
+                `;
+                
+                const cashToRemove = data.amountToRemove - data.totalReceipts - data.totalAdditionalCash;
+                if (cashToRemove > 0) {
+                    html += `<li>Additional cash from till: £${cashToRemove.toFixed(2)}</li>`;
+                } else if (cashToRemove < 0) {
+                    html += `<li>Add cash to till: £${Math.abs(cashToRemove).toFixed(2)}</li>`;
+                }
+                
+                html += `</ul>`;
+            } else {
+                html += `<p><strong>Add £${Math.abs(data.amountToRemove).toFixed(2)} to reach £${defaultFloat.toFixed(2)} float</strong></p>`;
+            }
+            
+            html += `
+                    <p><strong>Final till amount: £${defaultFloat.toFixed(2)}</strong></p>
+                </div>
+                
+                <div class="text-center mt-4">
+                    <button class="btn btn-light btn-lg" onclick="printResults()">
+                        <i class="fas fa-print"></i> Print Results
+                    </button>
+                    <button class="btn btn-light btn-lg" onclick="downloadReport()">
+                        <i class="fas fa-download"></i> Download Report
+                    </button>
+                </div>
+            `;
+            
+            resultsContent.innerHTML = html;
+            resultsSection.style.display = 'block';
+            resultsSection.scrollIntoView({ behavior: 'smooth' });
+        }
+
+        function printResults() {
+            window.print();
+        }
+
+        function downloadReport() {
+            const resultsContent = document.getElementById('resultsContent').innerHTML;
+            const date = document.getElementById('date').value;
+            const reportContent = `
+CASH UP REPORT - ${date}
+=====================================
+
+${resultsContent.replace(/<[^>]*>/g, '').replace(/\s+/g, ' ').trim()}
+
+Generated by CashUp Application
+            `;
+            
+            const blob = new Blob([reportContent], { type: 'text/plain' });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement('a');
+            a.href = url;
+            a.download = `Cash_Up_${date}.txt`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+        }
+
+        // Set today's date and initialize
+        document.addEventListener('DOMContentLoaded', function() {
+            const today = new Date().toISOString().split('T')[0];
+            document.getElementById('date').value = today;
+            calculateTotals();
+        });
+    </script>
+</body>
+</html>

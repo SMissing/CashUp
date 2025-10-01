@@ -2,6 +2,12 @@
 
 A comprehensive cash management application for businesses to track daily takings, calculate float differences, and generate detailed reports.
 
+## 🌐 Live Demo
+
+**Try the application now**: [https://smissing.github.io/CashUp/](https://smissing.github.io/CashUp/)
+
+The application runs entirely in your browser - no installation required!
+
 ## Features
 
 - **Multiple Interfaces**: Web, Desktop GUI, and Command Line
@@ -60,14 +66,19 @@ The launcher provides three interface options:
 
 ### Web Interface
 
+**Option 1: Live Demo (Recommended)**
+1. Visit [https://smissing.github.io/CashUp/](https://smissing.github.io/CashUp/)
+2. No installation required - works in any modern browser
+
+**Option 2: Local Development**
 1. Open your browser and go to `http://localhost:5001`
 2. Enter today's date
 3. Count and enter cash amounts for each denomination
 4. Add receipt amounts
-5. Enter air hockey machine earnings
+5. Enter additional cash (air hockey, vending, etc.)
 6. Enter expected takings
 7. Click "Calculate Cash Up" to see results
-8. Save the report for your records
+8. Print or download the report
 
 ### Desktop GUI
 
