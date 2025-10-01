@@ -1,0 +1,10 @@
+# GitHub Pages configuration
+include: ['.nojekyll']
+exclude: ['README.md', 'main.py', 'app.py', 'desktop_app.py', 'launcher.py', 'cash_up_core.py', 'config.py', 'requirements.txt', 'setup.py', 'templates', 'Reports', '__pycache__', '.DS_Store']
+
+# Set the default layout to none for index.html
+defaults:
+  - scope:
+      path: "index.html"
+    values:
+      layout: none
